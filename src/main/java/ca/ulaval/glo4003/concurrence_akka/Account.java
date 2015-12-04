@@ -21,9 +21,9 @@ public class Account {
 	public void transferMoneyTo(Account toAccount, int amount) {
 		delayPaymentIfFundsNotAvaialble(toAccount, amount);
 
-		balance -= amount;
+		changeBalance(-amount);
 		simulateDelay(); // You cannot remove this.
-		toAccount.balance += amount;
+		toAccount.changeBalance(amount);
 
 		if (balance < 0) {
 			throw new NegativeBalanceException();
@@ -31,7 +31,7 @@ public class Account {
 
 	}
 
-	private void delayPaymentIfFundsNotAvaialble(Account otherAccount, int amount) {
+	private synchronized void delayPaymentIfFundsNotAvaialble(Account otherAccount, int amount) {
 		if (balance - amount < 0) {
 			if (delayedPayments.containsKey(otherAccount)) {
 				delayedPayments.put(otherAccount, delayedPayments.get(otherAccount) + amount);
@@ -41,6 +41,10 @@ public class Account {
 			throw new OutOfMoneyForNowException();
 		}
 		simulateDelay(); // You cannot remove this.
+	}
+
+	private synchronized void changeBalance(int delta) {
+		balance += delta;
 	}
 
 	private void simulateDelay() {
