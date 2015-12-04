@@ -88,7 +88,7 @@ public class App {
 	private static void checkThatAllAccountsAreBackToTheirInitialBalance(Account[] accounts) {
 		System.out.print("Verifying account consistency...");
 		for (int i = 0; i < NUMBER_OF_ACCOUNTS; i++) {
-			if (accounts[i].balance != accounts[i].initialBalance) {
+			if (accounts[i].balance.get() != accounts[i].initialBalance) {
 				System.err.println("Account #" + i + " should have a balance of " + accounts[i].initialBalance + "$, but has " + accounts[i].balance + "$.");
 			}
 		}
