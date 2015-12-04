@@ -3,10 +3,13 @@ package ca.ulaval.glo4003.concurrence_akka;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Account {
 
 	public final int initialBalance;
+
+	private static ReentrantLock lock = new ReentrantLock();
 
 	public int balance;
 	public int accountNumber;
@@ -19,6 +22,12 @@ public class Account {
 	}
 
 	public void transferMoneyTo(Account toAccount, int amount) {
+		try {
+			lock.lockInterruptibly();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		delayPaymentIfFundsNotAvaialble(toAccount, amount);
 
 		balance -= amount;
@@ -26,8 +35,11 @@ public class Account {
 		toAccount.balance += amount;
 
 		if (balance < 0) {
+			lock.unlock();
 			throw new NegativeBalanceException();
 		}
+
+		lock.unlock();
 
 	}
 
@@ -38,6 +50,7 @@ public class Account {
 			} else {
 				delayedPayments.put(otherAccount, amount);
 			}
+			lock.unlock();
 			throw new OutOfMoneyForNowException();
 		}
 		simulateDelay(); // You cannot remove this.
