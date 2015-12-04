@@ -19,7 +19,7 @@ public class Account {
 		this.accountNumber = accountNumber;
 	}
 
-	public void transferMoneyTo(Account toAccount, int amount) {
+	public synchronized void transferMoneyTo(Account toAccount, int amount) {
 		delayPaymentIfFundsNotAvaialble(toAccount, amount);
 
 		balance.getAndAdd(-amount);
