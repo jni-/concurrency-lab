@@ -3,17 +3,18 @@ package ca.ulaval.glo4003.concurrence_akka;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Account {
 
 	public final int initialBalance;
 
-	public int balance;
+	public AtomicInteger balance;
 	public int accountNumber;
 	public Map<Account, Integer> delayedPayments = new ConcurrentHashMap<>();
 
 	public Account(int balance, int accountNumber) {
-		this.balance = balance;
+		this.balance = new AtomicInteger(balance);
 		this.initialBalance = balance;
 		this.accountNumber = accountNumber;
 	}
@@ -21,18 +22,18 @@ public class Account {
 	public void transferMoneyTo(Account toAccount, int amount) {
 		delayPaymentIfFundsNotAvaialble(toAccount, amount);
 
-		balance -= amount;
+		balance.getAndAdd(-amount);
 		simulateDelay(); // You cannot remove this.
-		toAccount.balance += amount;
+		toAccount.balance.getAndAdd(amount);
 
-		if (balance < 0) {
+		if (balance.get() < 0) {
 			throw new NegativeBalanceException();
 		}
 
 	}
 
 	private void delayPaymentIfFundsNotAvaialble(Account otherAccount, int amount) {
-		if (balance - amount < 0) {
+		if (balance.get() - amount < 0) {
 			if (delayedPayments.containsKey(otherAccount)) {
 				delayedPayments.put(otherAccount, delayedPayments.get(otherAccount) + amount);
 			} else {
