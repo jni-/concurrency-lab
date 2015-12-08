@@ -37,6 +37,7 @@ Here are a few ideas :
  * Try [akka agents](http://doc.akka.io/docs/akka/snapshot/java/agents.html). You may need to change the `App.java` for this one and handle failures with [Futures](http://doc.akka.io/docs/akka/snapshot/java/agents.html) instead. (branch: akka_agents)
  * Shared mutable state is the root of all evils (in concurrency). Can you avoid the problem altogether? (solution not provided)
  * Can you map out an actor model for this problem? You can change anything in the code for this. (solution not provided)
+ * If you want a fonctionnal approach to this problem using clojure, see [this repository](https://github.com/gariepyalex/bankaccount) from gariepyalex.
 
 Explain :
  * How come making `transferMoneyTo()` synchronized is not working? Or rather, why is it only partially working.
