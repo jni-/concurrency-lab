@@ -76,7 +76,6 @@ public class App {
 			for (int i = 0; i < NUMBER_OF_ACCOUNTS; i++) {
 				try {
 					accounts[i].fullfilDelayedPayments();
-					someOneNeedsToBeRepaid = someOneNeedsToBeRepaid || false;
 				} catch (OutOfMoneyForNowException e) {
 					someOneNeedsToBeRepaid = true;
 				}
