@@ -50,20 +50,16 @@ public class App {
 	}
 
 	private static Runnable createTransactionRunnable(final Account fromAccount, final Account toAccount, final int amount) {
-		return new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					fromAccount.transferMoneyTo(toAccount, amount);
-				} catch (OutOfMoneyForNowException e) {
-					System.out.println(
-							"Cannot transfer " + amount + "$ from account #" + fromAccount.accountNumber + " to account #" + toAccount.accountNumber + ".");
-				} catch (NegativeBalanceException e) {
-					System.err.println("Balance of account #" + fromAccount.accountNumber + " became negative!!");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		return () -> {
+			try {
+				fromAccount.transferMoneyTo(toAccount, amount);
+			} catch (OutOfMoneyForNowException e) {
+				System.out.println(
+						"Cannot transfer " + amount + "$ from account #" + fromAccount.accountNumber + " to account #" + toAccount.accountNumber + ".");
+			} catch (NegativeBalanceException e) {
+				System.err.println("Balance of account #" + fromAccount.accountNumber + " became negative!!");
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		};
 	}
